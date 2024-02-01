@@ -1,5 +1,7 @@
+#!/usr/bin/python3
 import json
 import sys
+from pathlib import Path
 from pprint import pprint
 from datetime import datetime, timezone
 
@@ -17,11 +19,18 @@ notion_api_key - the API key for the integration
 """
 
 
+DEFAULT_CONFIG_PATH = Path.home() / "notion_journal_poster.ini"
+
 class NotionJournalPoster:
 
     def __init__(self, config_path=None):
+        config_path = config_path or DEFAULT_CONFIG_PATH
+
+        if not Path(config_path).exists():
+            print(f"Config file not found at {config_path}")
+            sys.exit(1)
         config = configparser.ConfigParser()
-        config.read(config_path or "~/.notion_journal_poster.ini")
+        config.read(config_path)
 
         self.db_id = config['JOURNAL_CREDS']['db_id']
         self.person_id = config['JOURNAL_CREDS']['person_id']
@@ -103,7 +112,7 @@ class NotionJournalPoster:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": text
+                                    "content": " "+text if with_timestamp else text
                                 }
                             }
                         ]
@@ -130,7 +139,7 @@ class NotionJournalPoster:
         response = requests.get(url, headers=self.headers)
         pprint(response.json())
 
-    def post_journal_update(self, text):
+    def post_journal_update(self, input_text):
         todays_page_id = (self.get_todays_page_id_for_user() or self.create_new_todays_page_for_user())
         self.add_child_text_block_to_block(todays_page_id, input_text, with_timestamp=True)
 
