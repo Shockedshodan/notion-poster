@@ -12,14 +12,16 @@ import configparser
 """
 This script sends its command line arguments to the Notion API to create a new journal entry
 in the user's journal.
-For it to work you need to provide the config file with three variables:
+For it to work you need to provide the config file notion_poster.ini:
+
+[GENERAL]
 db_id   -  the ID of the journals database" page
 person_id - the ID of the user (UUID)
-notion_api_key - the API key for the integration
+api_key - the API key for the integration
 """
 
+DEFAULT_CONFIG_PATH = Path.home() / "notion_poster.ini"
 
-DEFAULT_CONFIG_PATH = Path.home() / "notion_journal_poster.ini"
 
 class NotionJournalPoster:
 
@@ -32,9 +34,9 @@ class NotionJournalPoster:
         config = configparser.ConfigParser()
         config.read(config_path)
 
-        self.db_id = config['JOURNAL_CREDS']['db_id']
-        self.person_id = config['JOURNAL_CREDS']['person_id']
-        self.notion_api_key = config['JOURNAL_CREDS']['notion_api_key']
+        self.notion_api_key = config['GENERAL']['api_key']
+        self.person_id = config['GENERAL']['person_id']
+        self.db_id = config['JOURNAL']['db_id']
 
         # Get the current date and time in UTC
         now_utc = datetime.now(timezone.utc)
@@ -112,7 +114,7 @@ class NotionJournalPoster:
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": " "+text if with_timestamp else text
+                                    "content": " " + text if with_timestamp else text
                                 }
                             }
                         ]
