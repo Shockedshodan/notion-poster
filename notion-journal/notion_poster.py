@@ -15,12 +15,23 @@ in the user's journal.
 For it to work you need to provide the config file notion_poster.ini:
 
 [GENERAL]
-db_id   -  the ID of the journals database" page
-person_id - the ID of the user (UUID)
-api_key - the API key for the integration
+api_key=<the API key for the integration>
+person_id=<the ID of the user (UUID)>
+[JOURNAL]
+db_id=<the ID of the journals database page>
+
 """
 
 DEFAULT_CONFIG_PATH = Path.home() / "notion_poster.ini"
+
+
+def notify(message):
+    from notifier import Notifier
+    notifier = Notifier()
+    notifier.title = "Notion Journal Poster"
+    notifier.message = message
+
+    notifier.send()
 
 
 class NotionJournalPoster:
@@ -135,6 +146,7 @@ class NotionJournalPoster:
 
         response = requests.patch(url, headers=self.headers, data=json.dumps(data))
         pprint(response.json())
+        return response.json()
 
     def get_page_children(self, page_id: str):
         url = f"https://api.notion.com/v1/blocks/{page_id}/children"
@@ -143,10 +155,12 @@ class NotionJournalPoster:
 
     def post_journal_update(self, input_text):
         todays_page_id = (self.get_todays_page_id_for_user() or self.create_new_todays_page_for_user())
-        self.add_child_text_block_to_block(todays_page_id, input_text, with_timestamp=True)
+        return self.add_child_text_block_to_block(todays_page_id, input_text, with_timestamp=True)
 
 
 if __name__ == "__main__":
     input_text = ' '.join(sys.argv[1:])
     njp = NotionJournalPoster()
-    njp.post_journal_update(input_text)
+    result = njp.post_journal_update(input_text)
+    created_time = result['results'][0]['created_time']
+    notify("Created new journal entry in Notion: " + created_time)
