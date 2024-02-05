@@ -48,16 +48,14 @@ db_id=<the ID of the journals database page>
 ```
 
 ## How it works
-The utility expects the Notion journal to be a two-level structure:
-1. a "database" of daily entries
-2. each daily entry a plaintext list of journal messages
+The utility expects the Notion journal to be a flat database of messages,
+each message as a separate row. Messages are put into the `Entry` column 
+(special `title` field in Notion)
 
 When run, the utility:
 * connects to Notion with the provided `api_key` 
-* queries the `db_id` journal database for today's daily entry by `person_id`
-* if there is no such entry, it creates a new one
-* appends the text from the commandline arguments as a timestamped entry to the entry
-* tries to run a desktop notification
+* posts the given text as a new entry into database `db_id` marked as `person_id`
+* tries to send a desktop notification to the user
 
 ## Important notes
 

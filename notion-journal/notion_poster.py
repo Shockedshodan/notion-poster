@@ -89,12 +89,22 @@ class NotionJournalPoster:
             return resp_dict['results'][0]['id']
         return None
 
-    def create_new_todays_page_for_user(self):
+    def create_new_journal_entry_for_user(self, text: str):
         url = f"https://api.notion.com/v1/pages"
         # Define the data for the new children
         data = {
             "parent": {"database_id": self.db_id},
             "properties": {
+                "Entry": {
+                    "title": [
+                        {
+                            "type": "text",
+                            "text": {
+                                "content": text
+                            }
+                        }
+                    ]
+                },
                 "Person": {
                     "people": [
                         {
@@ -104,14 +114,14 @@ class NotionJournalPoster:
                 },
                 "Date": {
                     "date": {
-                        "start": self.today_date_iso
+                        'start': self.now_local.isoformat(),
                     }
                 }
             }
         }
         response = requests.post(url, headers=self.headers, data=json.dumps(data))
         pprint(response.json())
-        return response.json()['id']
+        return response.json()
 
     def add_child_text_block_to_block(self, block_id: str, text: str, with_timestamp=False):
         url = f"https://api.notion.com/v1/blocks/{block_id}/children"
@@ -153,14 +163,10 @@ class NotionJournalPoster:
         response = requests.get(url, headers=self.headers)
         pprint(response.json())
 
-    def post_journal_update(self, input_text):
-        todays_page_id = (self.get_todays_page_id_for_user() or self.create_new_todays_page_for_user())
-        return self.add_child_text_block_to_block(todays_page_id, input_text, with_timestamp=True)
-
 
 if __name__ == "__main__":
     input_text = ' '.join(sys.argv[1:])
     njp = NotionJournalPoster()
-    result = njp.post_journal_update(input_text)
-    created_time = result['results'][0]['created_time']
-    notify("Created new journal entry in Notion: " + created_time)
+    result = njp.create_new_journal_entry_for_user(input_text)
+    created_time = result['created_time']
+    notify("Notion journal [" + created_time + "]: " + input_text)
