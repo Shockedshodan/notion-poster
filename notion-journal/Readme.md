@@ -20,6 +20,7 @@ and run directly as
 
 
 ```bash
+pip3 install -r requirements.txt
 notion_poster.py My first journal entry! Yay!
 ```
 
