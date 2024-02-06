@@ -26,12 +26,14 @@ DEFAULT_CONFIG_PATH = Path.home() / "notion_poster.ini"
 
 
 def notify(message):
-    from notifier import Notifier
-    notifier = Notifier()
-    notifier.title = "Notion Journal Poster"
-    notifier.message = message
+    from pynotifier import Notification
 
-    notifier.send()
+    Notification(
+        title='Notification Title',
+        description=message,
+        duration=1,  # Duration in seconds
+        urgency='low'
+    ).send()
 
 
 class NotionJournalPoster:
