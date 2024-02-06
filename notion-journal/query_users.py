@@ -25,4 +25,4 @@ print("| --- | --- |")
 
 # print each row
 for user in users:
-    print(f"| {user['id']} | {user['name']} |")
+    print(f"|{user['name']}|`{user['id']}`| ")
