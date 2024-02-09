@@ -4,25 +4,13 @@ import sys
 from pathlib import Path
 from pprint import pprint
 from datetime import datetime, timezone
+from flowlauncher import FlowLauncher
 
 import requests
 
 import configparser
 
-"""
-This script sends its command line arguments to the Notion API to create a new journal entry
-in the user's journal.
-For it to work you need to provide the config file notion_poster.ini:
 
-[GENERAL]
-api_key=<the API key for the integration>
-person_id=<the ID of the user (UUID)>
-[JOURNAL]
-db_id=<the ID of the journals database page>
-
-"""
-
-DEFAULT_CONFIG_PATH = Path.home() / "notion_poster.ini"
 
 
 def notify(message):
@@ -36,21 +24,13 @@ def notify(message):
     ).send()
 
 
-class NotionJournalPoster:
+class NotionJournalPoster(FlowLauncher):
 
-    def __init__(self, config_path=None):
-        config_path = config_path or DEFAULT_CONFIG_PATH
-
-        if not Path(config_path).exists():
-            print(f"Config file not found at {config_path}")
-            sys.exit(1)
-        config = configparser.ConfigParser()
-        config.read(config_path)
-
-        self.notion_api_key = config['GENERAL']['api_key']
-        self.person_id = config['GENERAL']['person_id']
-        self.db_id = config['JOURNAL']['db_id']
-
+    def __init__(self):
+        self.api_key = self.settings.get('api_key')
+        self.person_id = self.settings.get('person_id')
+        self.db_id = self.settings.get('db_id')
+        
         # Get the current date and time in UTC
         now_utc = datetime.now(timezone.utc)
         self.now_local = now_utc.astimezone()
@@ -62,6 +42,26 @@ class NotionJournalPoster:
             "Notion-Version": "2022-06-28",
             "Content-Type": "application/json"
         }
+
+
+    def query(self, query: str):
+        output = []
+        if len(query.strip()) == 0:
+            output.append({
+                "Title": "No query provided",
+                "IcoPath": "Images/notion.png",
+            })
+        else: 
+            output.append({
+                "Title": "Create new journal entry",
+                "SubTitle": query,
+                "IcoPath": "Images/notion.png",
+                "JsonRPCAction": {
+                    "method": "create_new_journal_entry_for_user",
+                    "parameters": [query],
+                    "dontHideAfterAction": False
+                }
+            })
 
     def get_todays_page_id_for_user(self) -> [str | None]:
         url = f"https://api.notion.com/v1/databases/{self.db_id}/query"

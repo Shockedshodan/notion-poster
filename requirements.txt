@@ -1,2 +1,3 @@
-notifier==1.0.3
+py-notifier==0.3.2
 Requests==2.31.0
+flowlauncher

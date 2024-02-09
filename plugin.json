@@ -1,0 +1,12 @@
+{
+    "ID": "a98c578b38dc4e73bfcdd0329717d480",
+    "ActionKeyword": "ns",
+    "Name": "Notion Poster",
+    "Description": "Post to Notion from Flow",
+    "Author": "AKO",
+    "Version": "1.0.0",
+    "Language": "python",
+    "Website": "https://github.com/Shockedshodan/notion-poster",
+    "IcoPath": "icon.png",
+    "ExecuteFileName": "main.py"
+  }
