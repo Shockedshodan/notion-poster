@@ -5,7 +5,7 @@ import os
 plugindir = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(plugindir)
 sys.path.append(os.path.join(plugindir, "lib"))
-sys.path.append(os.path.join(plugindir, "plugin"))
+sys.path.append("../notion_journal")
 
 from notion_journal.notion_poster import NotionJournalPoster
 import requests
