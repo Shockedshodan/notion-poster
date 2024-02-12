@@ -38,18 +38,17 @@ def notify(message):
 
 class NotionJournalPoster:
 
-    def __init__(self, config_path=None):
-        config_path = config_path or DEFAULT_CONFIG_PATH
-
-        if not Path(config_path).exists():
-            print(f"Config file not found at {config_path}")
-            sys.exit(1)
-        config = configparser.ConfigParser()
-        config.read(config_path)
-
-        self.notion_api_key = config['GENERAL']['api_key']
-        self.person_id = config['GENERAL']['person_id']
-        self.db_id = config['JOURNAL']['db_id']
+    def __init__(self, config_path=None, flow_self = None):
+        
+        if flow_self is not None:
+            self.notion_api_key = flow_self.settings.get("api_key")
+            self.person_id = flow_self.settings.get("person_id")
+            self.db_id = flow_self.settings.get("db_id")
+        else:
+            config = self.get_and_read_config(config_path)
+            self.notion_api_key = config['GENERAL']['api_key']
+            self.person_id = config['GENERAL']['person_id']
+            self.db_id = config['JOURNAL']['db_id']
 
         # Get the current date and time in UTC
         now_utc = datetime.now(timezone.utc)
@@ -63,6 +62,16 @@ class NotionJournalPoster:
             "Content-Type": "application/json"
         }
 
+
+    def get_and_read_config(config_path=None) -> configparser:
+        config_path = config_path or DEFAULT_CONFIG_PATH
+        if not Path(config_path).exists():
+            print(f"Config file not found at {config_path}")
+            sys.exit(1)
+        config = configparser.ConfigParser()
+        config.read(config_path)
+        return config
+    
     def get_todays_page_id_for_user(self) -> [str | None]:
         url = f"https://api.notion.com/v1/databases/{self.db_id}/query"
         filter = {
@@ -116,7 +125,7 @@ class NotionJournalPoster:
                 },
                 "Date": {
                     "date": {
-                        'start': self.now_local.isoformat(),
+                        "start": self.now_local.isoformat(),
                     }
                 }
             }

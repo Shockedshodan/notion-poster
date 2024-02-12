@@ -1,0 +1,16 @@
+body:
+  - type: input
+    attributes:
+      name: api_key
+      label: "Notion api key:"
+      description: "Put there Notion api key"
+  - type: input
+    attributes:
+      name: person_id
+      label: "ID of the user"
+      description: "Get it from a browser inspector at notion.com"
+  - type: input
+    attributes:
+      name: db_id
+      label: "Database id"
+      description: "Databaqse id"
