@@ -8,5 +8,5 @@
     "Language": "python",
     "Website": "https://github.com/HIRO-MicroDataCenters-BV/hiro-org-tools",
     "IcoPath": "icon.png",
-    "ExecuteFileName": "notionposter_windows/main.py"
+    "ExecuteFileName": "notion_journal/notionposter_windows/main.py"
   }
