@@ -7,7 +7,7 @@ plugin_parent_dir = os.path.dirname(plugindir)
 sys.path.append(plugin_parent_dir)
 sys.path.append(os.path.join(plugin_parent_dir, "lib"))
 sys.path.append(os.path.join(plugin_parent_dir, "notionposter_windows"))
-sys.path.append(os.path.join(plugin_parent_dir, "notion-journal"))
+sys.path.append(os.path.join(plugin_parent_dir, "notion_journal"))
 
 from notion_journal.notion_poster import NotionJournalPoster
 import requests
