@@ -41,10 +41,12 @@ class WindowsPlugin(Flox):
       else:
             self.add_item(title="Create new journal entry",
                         subtitle=query,
-                        method=self.notion_poster.create_new_journal_entry_for_user,
+                        method=self.create_journay_entry,
                         parameters=[query]
             )
 
+   def create_journay_entry(self, query: str):
+      self.notion_poster.create_new_journal_entry_for_user(query)
 
 if __name__ == "__main__":
    windows_notion_poster = WindowsPlugin()
