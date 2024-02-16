@@ -130,9 +130,21 @@ class NotionJournalPoster:
                 }
             }
         }
-        response = requests.post(url, headers=self.headers, data=json.dumps(data))
-        pprint(response.json())
-        return response.json()
+        try:
+            response = requests.post(url, headers=self.headers, data=json.dumps(data))
+            if self.flow_self is not None:
+                # Temporary workaround for flow launcher
+                return None
+            if response.headers.get('Content-Type') == 'application/json' and response.status_code == 200:
+                response_json = json.loads(response.text) 
+                return response_json
+            else:
+                print("Non-JSON Response or Error Status Code")
+                return response.text  # Return raw text for inspection
+        except json.JSONDecodeError as e:
+            print("JSON parsing error:", e)
+        except requests.RequestException as e:
+            print("Request error:", e)
 
     def add_child_text_block_to_block(self, block_id: str, text: str, with_timestamp=False):
         url = f"https://api.notion.com/v1/blocks/{block_id}/children"
