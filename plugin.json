@@ -6,7 +6,7 @@
     "Author": "AKO",
     "Version": "1.0.0",
     "Language": "python",
-    "Website": "https://github.com/HIRO-MicroDataCenters-BV/hiro-org-tools",
+    "Website": "https://github.com/Shockedshodan/notion-poster",
     "IcoPath": "notionposter_windows/icons/app.png",
     "ExecuteFileName": "notionposter_windows/main.py"
   }
