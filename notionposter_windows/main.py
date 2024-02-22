@@ -13,8 +13,7 @@ from notion_journal.notion_poster import NotionJournalPoster
 import requests
 from requests.exceptions import HTTPError
 from flox import Flox, ICON_APP_ERROR
-
-
+ERROR_ICON = os.path.join(plugindir, "icons", "error.png")
 
 class WindowsPlugin(Flox):
    def __init__(self):
@@ -36,7 +35,7 @@ class WindowsPlugin(Flox):
       if len(query.strip()) == 0:
             self.add_item(title="Empty query is not allowed",
                         subtitle="No query provided",
-                        icon=ICON_APP_ERROR
+                        icon=ERROR_ICON
                      )
       else:
             self.add_item(title="Create new journal entry",
