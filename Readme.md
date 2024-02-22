@@ -8,4 +8,5 @@ posting their daily journal entries without having to switch to Notion Web.
 See 'Readme.md' in the dir for more information.
 
 `notionposter-windows` dir contains a plugin for a Flow Launcher
- that allows us to quick post entries into db.
+ that allows us to quick post entries into db. 
+ See 'Readme.md' in the dir for more information.
